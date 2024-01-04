@@ -54,7 +54,48 @@ async function saveParameters() {
 function exportToPDF() {
   window.jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF();
-  doc.autoTable({ html: "#summary" });
+
+  function shouldExcludeCell(cell) {
+    return cell.classList.contains("exclude-from-pdf");
+  }
+
+  function addRowToPDF(row) {
+    const cells = row.cells;
+    const rowData = [];
+
+    const columnWidths = [50, 80, 80];
+
+    for (let i = 0; i < cells.length; i++) {
+      if (!shouldExcludeCell(cells[i])) {
+        let cellContent;
+
+        const inputElement = cells[i].querySelector("input");
+        if (inputElement) {
+          cellContent = inputElement.value;
+        } else {
+          cellContent = cells[i].innerText;
+        }
+
+        const styles = {
+          columnWidth: columnWidths[i],
+          cellWidth: "auto",
+          overflow: "linebreak",
+        };
+
+        rowData.push({ content: cellContent, styles });
+      }
+    }
+
+    doc.autoTable({
+      body: [rowData],
+    });
+  }
+
+  const tableRows = document.getElementById("summary").rows;
+  for (let i = 0; i < tableRows.length; i++) {
+    addRowToPDF(tableRows[i]);
+  }
+
   doc.save("table.pdf");
 }
 
@@ -68,10 +109,17 @@ async function loadTable(data) {
       var entrepriseTD = document.createElement("td");
       entrepriseTD.innerText = element.compagny_name;
       var adressTD = document.createElement("td");
-      adressTD.innerText = element.address;
+      var inputAdress = document.createElement("input");
+      adressTD.appendChild(inputAdress);
+      inputAdress.value = element.address;
+      inputAdress.id = `${element.id}`;
+      inputAdress.style.width = "100%";
+      adressTD.style.width = "40%";
+      inputAdress.style.whiteSpace = "nowrap";
       var titleTD = document.createElement("td");
       titleTD.innerText = element.title;
       var optionTD = document.createElement("td");
+      optionTD.className = "exclude-from-pdf";
 
       var button1 = document.createElement("button");
       button1.innerText = "Ban Entreprise";
@@ -83,7 +131,8 @@ async function loadTable(data) {
 
       var button3 = document.createElement("button");
       button3.innerText = "Changer adresse manuellement";
-      button3.addEventListener("click", function () {});
+      button3.addEventListener("click", () => changeAdress(element));
+
       optionTD.appendChild(button1);
       optionTD.appendChild(button2);
       optionTD.appendChild(button3);
@@ -106,8 +155,27 @@ async function loadTable(data) {
       }, 200);
     });
   } catch (error) {
-    console.log("=============ERROR===========");
-    console.log(error);
+    console.error(error);
+  }
+}
+
+async function changeAdress(element) {
+  try {
+    const adress = document.getElementById(`${element.id}`).value;
+    await fetch(
+      `http://localhost:3000/data/changeAdress/${encodeURIComponent(
+        element.compagny_name
+      )}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ adress }),
+      }
+    ).then(() => location.reload());
+  } catch (error) {
+    console.error("Change Adress Fetch Error:", error);
   }
 }
 
@@ -139,7 +207,7 @@ async function banWord() {
       input.value = "";
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -154,7 +222,7 @@ async function banCompagnie(element) {
       response.json();
       location.reload();
     })
-    .catch((error) => console.log(error));
+    .catch((error) => console.error(error));
 }
 
 async function banTitle(element) {

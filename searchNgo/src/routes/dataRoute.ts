@@ -3,6 +3,25 @@ import prisma from "../prisma";
 
 const router = express.Router();
 
+router.put("/changeAdress/:name", async (req, res) => {
+  try {
+    const body = req.body;
+    const compagny_name = req.params.name;
+    const response = await prisma.compagnies.update({
+      where: {
+        compagny_name: compagny_name,
+      },
+      data: {
+        address: body.adress,
+      },
+    });
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.get("/allCompagnies/:keyword", async (req, res) => {
   try {
     const keyword = req.params.keyword;

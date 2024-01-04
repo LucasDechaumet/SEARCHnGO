@@ -15,6 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_1 = __importDefault(require("../prisma"));
 const router = express_1.default.Router();
+router.put("/changeAdress/:name", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const body = req.body;
+        const compagny_name = req.params.name;
+        const response = yield prisma_1.default.compagnies.update({
+            where: {
+                compagny_name: compagny_name,
+            },
+            data: {
+                address: body.adress,
+            },
+        });
+        res.json(response);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.get("/allCompagnies/:keyword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const keyword = req.params.keyword;
