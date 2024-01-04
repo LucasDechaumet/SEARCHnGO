@@ -12,25 +12,36 @@ async function initMap() {
   map = new google.maps.Map(document.getElementById("map"), options);
 }
 
+async function initMapWElement(element) {
+  var options = {
+    center: element.coords,
+    zoom: 16,
+  };
+  map = new google.maps.Map(document.getElementById("map"), options);
+  addMarker(element);
+}
+
 function addMarker(element) {
-  if (element.met == false) {
-    const marker = new google.maps.Marker({
-      position: element.coords,
-      map: map,
-    });
-  } else {
-    const marker = new google.maps.Marker({
-      position: element.coords,
-      map: map,
-      icon: {
-        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        fillColor: "green",
-        fillOpacity: 1,
-        strokeColor: "black",
-        strokeWeight: 2,
-        scale: 8,
-      },
-    });
+  if (!(element.coords.lat === 45.764043 && element.coords.lng === 4.835659)) {
+    if (element.met == false) {
+      const marker = new google.maps.Marker({
+        position: element.coords,
+        map: map,
+      });
+    } else {
+      const marker = new google.maps.Marker({
+        position: element.coords,
+        map: map,
+        icon: {
+          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+          fillColor: "green",
+          fillOpacity: 1,
+          strokeColor: "black",
+          strokeWeight: 2,
+          scale: 8,
+        },
+      });
+    }
   }
 }
 
@@ -107,7 +118,10 @@ async function loadTable(data) {
     json.forEach((element) => {
       var newTR = document.createElement("tr");
       var entrepriseTD = document.createElement("td");
-      entrepriseTD.innerText = element.compagny_name;
+      var entrepriseLink = document.createElement("a");
+      entrepriseLink.innerText = element.compagny_name;
+      entrepriseLink.onclick = () => initMapWElement(element);
+      entrepriseTD.appendChild(entrepriseLink);
       var adressTD = document.createElement("td");
       var inputAdress = document.createElement("input");
       adressTD.appendChild(inputAdress);
@@ -142,6 +156,9 @@ async function loadTable(data) {
         button4.innerText = "CV déposé";
         button4.addEventListener("click", () => metCompagny(element));
         optionTD.appendChild(button4);
+      } else {
+        inputAdress.style.color = "green";
+        inputAdress.style.fontWeight = "bold";
       }
 
       newTR.appendChild(entrepriseTD);
@@ -188,7 +205,11 @@ async function metCompagny(element) {
       {
         method: "PUT",
       }
-    );
+    ).then((response) => {
+      const adress = document.getElementById(`${element.id}`);
+      adress.style.color = "green";
+      adress.style.fontWeight = "bold";
+    });
   } catch (error) {
     console.error("Met Compagny Fetch Error:", error);
   }
