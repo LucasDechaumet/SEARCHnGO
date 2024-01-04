@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Map</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.js"></script>
+    <script src="./app.js"></script>
+  </head>
+  <body>
+    <nav>
+      <h1>SearchNgo</h1>
+    </nav>
+    <div class="map_parameter">
+      <div class="map">
+        <div id="map"></div>
+      </div>
+      <div class="parameter">
+        <div class="titleParameter">
+          <h3>Sélectionner vos paramètres</h3>
+        </div>
+        <form id="paramForm">
+          <table>
+            <tr>
+              <td><label for="keyword">Votre mot clé</label></td>
+              <td><input type="text" name="keyword" id="keyword" /></td>
+            </tr>
+            <tr>
+              <td><label for="location">Votre ville</label></td>
+              <td><input type="text" name="location" id="location" /></td>
+            </tr>
+            <tr>
+              <td><label for="lrad">Rayon en km</label></td>
+              <td>
+                <select name="lrad" id="lrad" value="10">
+                  <option value="0">0</option>
+                  <option value="2">2</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="300">300</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <button onclick="saveParameters()">Enregistrer les modifications</button>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </form>
+        <div class="other">
+          <label for="pdf">Télécharger le tableau en pdf</label>
+          <button onclick="exportToPDF()">Export PDF</button>
+          <table>
+            <tr>
+              <td><label for="banThing">Entrer un mot à bannir</label></td>
+              <td><input type="text" name="banThing" id="banThing" /></td>
+              <td><button onclick="banWord()">Ban</button></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="table">
+      <div class="titletable">
+        <h1>Tableau récapitulatif</h1>
+      </div>
+      <table id="summary">
+        <thead>
+          <tr>
+            <th>Entreprise</th>
+            <th>Adresse</th>
+            <th>Titre</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOgFs-JgriH3ynNbEvANBEwtu8Z4U_aSA&callback=initMap"
+    ></script>
+  </body>
+</html>

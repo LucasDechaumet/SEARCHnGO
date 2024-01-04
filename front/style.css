@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+label {
+  white-space: nowrap;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map_parameter {
+  display: flex;
+}
+
+.map {
+  width: 75%;
+}
+
+#map {
+  height: 600px;
+  width: 100%;
+}
+
+.parameter {
+  width: 25%;
+}
+
+.titleParameter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titletable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#summary {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#summary th,
+#summary td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+#summary th {
+  font-weight: bold;
+}

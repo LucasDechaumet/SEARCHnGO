@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model compagnies {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  compagny_name String  @unique
+  q_parameter   String
+  title         String
+  location      String
+  address       String
+  coords        Json
+  met           Boolean
+}
+
+model qParameter {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  param    String
+  location String
+  lrad     Int
+}
+
+model banWords {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  word String
+}
