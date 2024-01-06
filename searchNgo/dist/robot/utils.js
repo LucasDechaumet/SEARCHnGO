@@ -72,6 +72,7 @@ function alreadyInDb(name) {
             const findFirst = yield prisma_1.default.compagnies.findFirst({
                 where: { compagny_name: name },
             });
+            console.log("Name : " + name + " Compare to " + JSON.stringify(findFirst));
             if (findFirst == null) {
                 return false;
             }
@@ -117,10 +118,10 @@ function hasBanWord(compagnies) {
 exports.hasBanWord = hasBanWord;
 const API_KEY = "AIzaSyDOgFs-JgriH3ynNbEvANBEwtu8Z4U_aSA";
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
-function getAdress(adress, location) {
+function getAdress(name, city) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch(`${URL_GEOCODE}address=${encodeURIComponent(`${adress} ${location}`)}&key=${API_KEY}`);
+            const response = yield fetch(`${URL_GEOCODE}address=${encodeURIComponent(`${name} ${city}`)}&key=${API_KEY}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

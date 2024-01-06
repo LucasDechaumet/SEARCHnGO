@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_1 = __importDefault(require("../prisma"));
+const utils_1 = require("../robot/utils");
 const router = express_1.default.Router();
 router.put("/changeAdress/:name", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -69,6 +70,39 @@ router.put("/metCompagny/:name", (req, res) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.post("/addCompagny", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    console.log(body);
+    const boolean = yield (0, utils_1.alreadyInDb)(body.compagny_name);
+    console.log("===============BOOLEAN======================");
+    console.log(boolean);
+    if (!boolean) {
+        try {
+            console.log("DONC J'AJOUTE");
+            const response = yield (0, utils_1.getAdress)(body.compagny_name, body.location);
+            const address = response.formatted_address;
+            const coords = response.geometry.location;
+            const compagny = {
+                compagny_name: body.compagny_name,
+                q_parameter: body.q_parameter,
+                title: "Ajouté manuellement",
+                location: body.location,
+                address: address,
+                coords: coords,
+                met: false,
+            };
+            yield (0, utils_1.addCompagny)(compagny);
+            res.status(200);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    else {
+        console.log("DONC J'AJOUTE PAS");
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));

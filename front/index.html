@@ -64,6 +64,25 @@
               <td><button onclick="banWord()">Ban</button></td>
             </tr>
           </table>
+          <h3>Ajouter manuellement une entreprise</h3>
+          <table>
+            <tr>
+              <td><label for="compagnyName">Entrez le nom de l'entreprise</label></td>
+              <td><input type="text" name="compagnyName" id="compagnyName" /></td>
+            </tr>
+            <tr>
+              <td>
+                <label for="compagnyLocation">Entrez la ville de l'entreprise</label>
+              </td>
+              <td><input type="text" name="compagnyLocation" id="compagnyLocation" /></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><button onclick="addMyCompagny()">Ajouter l'entreprise</button></td>
+              <td></td>
+            </tr>
+          </table>
+          <div id="addMyCompagnyResponse"></div>
         </div>
       </div>
     </div>

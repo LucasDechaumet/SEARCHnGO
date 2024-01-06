@@ -19,10 +19,17 @@ async function initMapWElement(element) {
   };
   map = new google.maps.Map(document.getElementById("map"), options);
   addMarker(element);
+  window.scrollTo(0, 0);
 }
 
 function addMarker(element) {
-  if (!(element.coords.lat === 45.764043 && element.coords.lng === 4.835659)) {
+  if (
+    !(
+      (element.coords.lat === 45.764043 && element.coords.lng === 4.835659) ||
+      (element.coords.lat === 45.771274 && element.coords.lng === 4.884451) ||
+      (element.coords.lat === 45.771944 && element.coords.lng === 4.8901709)
+    )
+  ) {
     if (element.met == false) {
       const marker = new google.maps.Marker({
         position: element.coords,
@@ -118,9 +125,12 @@ async function loadTable(data) {
     json.forEach((element) => {
       var newTR = document.createElement("tr");
       var entrepriseTD = document.createElement("td");
+
       var entrepriseLink = document.createElement("a");
       entrepriseLink.innerText = element.compagny_name;
       entrepriseLink.onclick = () => initMapWElement(element);
+      entrepriseLink.style.textDecoration = "underline";
+      entrepriseLink.style.color = "purple";
       entrepriseTD.appendChild(entrepriseLink);
       var adressTD = document.createElement("td");
       var inputAdress = document.createElement("input");
@@ -157,8 +167,8 @@ async function loadTable(data) {
         button4.addEventListener("click", () => metCompagny(element));
         optionTD.appendChild(button4);
       } else {
-        inputAdress.style.color = "green";
-        inputAdress.style.fontWeight = "bold";
+        entrepriseTD.style.backgroundColor = "green";
+        entrepriseLink.style.fontWeight = "bold";
       }
 
       newTR.appendChild(entrepriseTD);
@@ -303,3 +313,56 @@ async function getLocationFromParam(location) {
     console.error("Error:", error);
   }
 }
+
+async function addMyCompagny() {
+  try {
+    const name = document.getElementById("compagnyName").value;
+    const loc = document.getElementById("compagnyLocation").value;
+    const loca = loc.toLowerCase();
+    const param = document.getElementById("keyword").value;
+    const data = {
+      compagny_name: name,
+      location: loca,
+      q_parameter: param,
+    };
+
+    const response = await fetch("http://localhost:3000/data/addCompagny", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((response) => {
+      location.reload();
+    });
+
+    // if (response.status !== 200) {
+    //   const p = document.createElement("p");
+    //   p.textContent = "L'entreprise est déjà intégrée";
+    //   p.style.color = "red";
+    //   const container = document.getElementById("addMyCompagnyResponse");
+    //   container.appendChild(p);
+    // } else {
+    //   location.reload();
+    // }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// async function metCompagny(element) {
+//   try {
+//     const response = await fetch(
+//       `http://localhost:3000/data/metCompagny/${encodeURIComponent(
+//         element.compagny_name
+//       )}`,
+//       {
+//         method: "PUT",
+//       }
+//     ).then((response) => {
+//       const adress = document.getElementById(`${element.id}`);
+//       adress.style.color = "green";
+//       adress.style.fontWeight = "bold";
+//     });
+//   } catch (error) {
+//     console.error("Met Compagny Fetch Error:", error);
+//   }
+// }

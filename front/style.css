@@ -57,3 +57,7 @@ nav {
 #summary th {
   font-weight: bold;
 }
+
+a:hover {
+  cursor: pointer;
+}
