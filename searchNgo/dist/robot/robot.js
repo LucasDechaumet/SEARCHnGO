@@ -14,7 +14,7 @@ const utils_1 = require("./utils");
 const URL = "https://serpapi.com/search.json?";
 const ENGINE = "google_jobs";
 const HL = "fr";
-const API_KEY = "76c2f42ae66022449bf1775238a929a80e0c634c7c0f5877f77ff35e02e923cd";
+const API_KEY = process.env.API_KEY_GOOGLE;
 function getAllJobs() {
     return __awaiter(this, void 0, void 0, function* () {
         const promises = [];

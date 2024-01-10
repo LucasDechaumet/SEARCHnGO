@@ -75,13 +75,9 @@ router.put("/metCompagny/:name", (req, res) => __awaiter(void 0, void 0, void 0,
 }));
 router.post("/addCompagny", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
-    console.log(body);
     const boolean = yield (0, utils_1.alreadyInDb)(body.compagny_name);
-    console.log("===============BOOLEAN======================");
-    console.log(boolean);
     if (!boolean) {
         try {
-            console.log("DONC J'AJOUTE");
             const response = yield (0, utils_1.getAdress)(body.compagny_name, body.location);
             const address = response.formatted_address;
             const coords = response.geometry.location;
@@ -102,7 +98,6 @@ router.post("/addCompagny", (req, res) => __awaiter(void 0, void 0, void 0, func
         }
     }
     else {
-        console.log("DONC J'AJOUTE PAS");
         res.status(500).json({ error: "Internal Server Error" });
     }
 }));

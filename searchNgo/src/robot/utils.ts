@@ -47,7 +47,6 @@ export async function alreadyInDb(name: string): Promise<boolean> {
     const findFirst = await prisma.compagnies.findFirst({
       where: { compagny_name: name },
     });
-    console.log("Name : " + name + " Compare to " + JSON.stringify(findFirst));
     if (findFirst == null) {
       return false;
     }
@@ -86,7 +85,7 @@ export async function hasBanWord(compagnies: JobResult): Promise<boolean> {
   return false;
 }
 
-const API_KEY = "AIzaSyDOgFs-JgriH3ynNbEvANBEwtu8Z4U_aSA";
+const API_KEY = process.env.API_KEY_GEOCODE;
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
 
 export async function getAdress(name: string, city: string) {

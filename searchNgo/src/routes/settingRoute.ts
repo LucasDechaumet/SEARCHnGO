@@ -101,4 +101,23 @@ router.post("/banWords", async (req, res) => {
   }
 });
 
+router.post("/password", async (req, res) => {
+  try {
+    const body = req.body;
+    const password = body.password;
+    const prismaPassword = await prisma.password.findFirst({
+      where: {
+        password: password,
+      },
+    });
+    if (prismaPassword === null) {
+      res.json({ success: false, message: "Mot de passe incorrect" });
+    } else {
+      res.json({ success: true, message: "Mot de passe correct" });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+});
+
 export default router;

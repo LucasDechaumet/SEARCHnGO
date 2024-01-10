@@ -10,7 +10,12 @@ const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-// getAllJobs();
+// function runJobPeriodically() {
+//   getAllJobs();
+//   setTimeout(runJobPeriodically, 56 * 60 * 60 * 1000);
+// }
+
+// runJobPeriodically();
 
 app.use("/setting", settingRouter);
 app.use("/data", dataRouter);

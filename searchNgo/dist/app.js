@@ -11,7 +11,11 @@ const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-// getAllJobs();
+// function runJobPeriodically() {
+//   getAllJobs();
+//   setTimeout(runJobPeriodically, 56 * 60 * 60 * 1000);
+// }
+// runJobPeriodically();
 app.use("/setting", settingRoute_1.default);
 app.use("/data", dataRoute_1.default);
 app.get("/", (req, res) => {

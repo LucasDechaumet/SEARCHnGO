@@ -32,3 +32,8 @@ model banWords {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   word String
 }
+
+model password {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  password String
+}

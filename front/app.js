@@ -1,16 +1,37 @@
-const API_KEY = "AIzaSyDOgFs-JgriH3ynNbEvANBEwtu8Z4U_aSA";
+import { getAPI } from "./config.js";
+
+const API_KEY = getAPI();
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
 
-async function initMap() {
-  const city = await getParam();
-  const location = await getLocationFromParam(city);
-  var options = {
-    center: location,
-    zoom: 12,
-  };
+let map;
 
-  map = new google.maps.Map(document.getElementById("map"), options);
+function initMapAsync() {
+  return new Promise((resolve, reject) => {
+    window.initMap = async function () {
+      try {
+        const city = await getParam();
+        const location = await getLocationFromParam(city);
+        const options = {
+          center: location,
+          zoom: 12,
+        };
+
+        map = new google.maps.Map(document.getElementById("map"), options);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    };
+  });
 }
+
+const script = document.createElement("script");
+script.defer = true;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`;
+
+document.head.appendChild(script);
+
+initMapAsync();
 
 async function initMapWElement(element) {
   var options = {
@@ -52,21 +73,56 @@ function addMarker(element) {
   }
 }
 
-async function saveParameters() {
-  const formData = new FormData(document.getElementById("paramForm"));
-  event.preventDefault();
-  const data = {};
-  for (const [key, value] of formData.entries()) {
-    data[key] = value;
+function wrongpassword() {
+  const text = document.getElementById("passwordText");
+  text.innerText = "Mot de passe incorrect";
+  text.style.color = "red";
+}
+
+async function checkPassword() {
+  try {
+    const password = document.getElementById("password").value;
+
+    if (password === "") {
+      const text = document.getElementById("passwordText");
+      text.innerText = "Veuillez entrer un mot de passe";
+      text.style.color = "red";
+    } else {
+      const response = await fetch("http://localhost:3000/setting/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    }
+  } catch (error) {
+    console.error(error);
   }
-  console.log(data);
-  const response = await fetch("http://localhost:3000/setting/chips", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .catch((error) => console.log(error));
+}
+
+async function saveParameters(event) {
+  event.preventDefault();
+  const password = await checkPassword();
+  if (password.success === true) {
+    const formData = new FormData(document.getElementById("paramForm"));
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    const response = await fetch("http://localhost:3000/setting/chips", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    location.reload();
+  } else if (password.success === false) {
+    wrongpassword();
+  }
 }
 
 function exportToPDF() {
@@ -187,87 +243,112 @@ async function loadTable(data) {
 }
 
 async function changeAdress(element) {
-  try {
-    const adress = document.getElementById(`${element.id}`).value;
-    await fetch(
-      `http://localhost:3000/data/changeAdress/${encodeURIComponent(
-        element.compagny_name
-      )}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ adress }),
-      }
-    ).then(() => location.reload());
-  } catch (error) {
-    console.error("Change Adress Fetch Error:", error);
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const adress = document.getElementById(`${element.id}`).value;
+      await fetch(
+        `http://localhost:3000/data/changeAdress/${encodeURIComponent(
+          element.compagny_name
+        )}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ adress }),
+        }
+      ).then(() => {
+        location.reload();
+      });
+    } catch (error) {
+      console.error("Change Adress Fetch Error:", error);
+    }
+  } else if (password.success === false) {
+    wrongpassword();
   }
 }
 
 async function metCompagny(element) {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/data/metCompagny/${encodeURIComponent(
-        element.compagny_name
-      )}`,
-      {
-        method: "PUT",
-      }
-    ).then((response) => {
-      const adress = document.getElementById(`${element.id}`);
-      adress.style.color = "green";
-      adress.style.fontWeight = "bold";
-    });
-  } catch (error) {
-    console.error("Met Compagny Fetch Error:", error);
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/data/metCompagny/${encodeURIComponent(
+          element.compagny_name
+        )}`,
+        {
+          method: "PUT",
+        }
+      ).then((response) => {
+        const adress = document.getElementById(`${element.id}`);
+        adress.style.color = "green";
+        adress.style.fontWeight = "bold";
+      });
+    } catch (error) {
+      console.error("Met Compagny Fetch Error:", error);
+    }
+  } else if (password.success === false) {
+    wrongpassword();
   }
 }
 
 async function banWord() {
-  try {
-    const input = document.getElementById("banThing");
-    const word = input.value;
-    body = [word];
-    const response = await fetch("http://localhost:3000/setting/banWords", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }).then((response) => {
-      input.value = "";
-    });
-  } catch (error) {
-    console.error(error);
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const input = document.getElementById("banThing");
+      const word = input.value;
+      body = [word];
+      const response = await fetch("http://localhost:3000/setting/banWords", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }).then((response) => {
+        input.value = "";
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  } else if (password.success === false) {
+    wrongpassword();
   }
 }
 
 async function banCompagnie(element) {
-  console.log(JSON.stringify(element));
-  const response = await fetch("http://localhost:3000/setting/banCompagnie", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(element),
-  })
-    .then((response) => {
-      response.json();
-      location.reload();
+  const password = await checkPassword();
+  if (password.success === true) {
+    const response = await fetch("http://localhost:3000/setting/banCompagnie", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(element),
     })
-    .catch((error) => console.error(error));
+      .then((response) => {
+        response.json();
+        location.reload();
+      })
+      .catch((error) => console.error(error));
+  } else if (password.success === false) {
+    wrongpassword();
+  }
 }
 
 async function banTitle(element) {
-  console.log(JSON.stringify(element));
-  const response = await fetch("http://localhost:3000/setting/banTitle", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(element),
-  })
-    .then((response) => {
-      response.json();
-      location.reload();
+  const password = await checkPassword();
+  if (password.success === true) {
+    const response = await fetch("http://localhost:3000/setting/banTitle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(element),
     })
-    .catch((error) => console.log(error));
+      .then((response) => {
+        response.json();
+        location.reload();
+      })
+      .catch((error) => console.log(error));
+  } else if (password.success === false) {
+    wrongpassword();
+  }
 }
 
 async function getParam() {
@@ -315,54 +396,30 @@ async function getLocationFromParam(location) {
 }
 
 async function addMyCompagny() {
-  try {
-    const name = document.getElementById("compagnyName").value;
-    const loc = document.getElementById("compagnyLocation").value;
-    const loca = loc.toLowerCase();
-    const param = document.getElementById("keyword").value;
-    const data = {
-      compagny_name: name,
-      location: loca,
-      q_parameter: param,
-    };
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const name = document.getElementById("compagnyName").value;
+      const loc = document.getElementById("compagnyLocation").value;
+      const loca = loc.toLowerCase();
+      const param = document.getElementById("keyword").value;
+      const data = {
+        compagny_name: name,
+        location: loca,
+        q_parameter: param,
+      };
 
-    const response = await fetch("http://localhost:3000/data/addCompagny", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((response) => {
-      location.reload();
-    });
-
-    // if (response.status !== 200) {
-    //   const p = document.createElement("p");
-    //   p.textContent = "L'entreprise est déjà intégrée";
-    //   p.style.color = "red";
-    //   const container = document.getElementById("addMyCompagnyResponse");
-    //   container.appendChild(p);
-    // } else {
-    //   location.reload();
-    // }
-  } catch (error) {
-    console.error(error);
+      const response = await fetch("http://localhost:3000/data/addCompagny", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }).then((response) => {
+        location.reload();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  } else if (password.success === false) {
+    wrongpassword();
   }
 }
-
-// async function metCompagny(element) {
-//   try {
-//     const response = await fetch(
-//       `http://localhost:3000/data/metCompagny/${encodeURIComponent(
-//         element.compagny_name
-//       )}`,
-//       {
-//         method: "PUT",
-//       }
-//     ).then((response) => {
-//       const adress = document.getElementById(`${element.id}`);
-//       adress.style.color = "green";
-//       adress.style.fontWeight = "bold";
-//     });
-//   } catch (error) {
-//     console.error("Met Compagny Fetch Error:", error);
-//   }
-// }
