@@ -91,7 +91,7 @@ router.post("/addCompagny", (req, res) => __awaiter(void 0, void 0, void 0, func
                 met: false,
             };
             yield (0, utils_1.addCompagny)(compagny);
-            res.status(200);
+            res.send("bien ajoutée");
         }
         catch (error) {
             console.error(error);

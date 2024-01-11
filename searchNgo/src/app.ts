@@ -3,7 +3,6 @@ import settingRouter from "./routes/settingRoute";
 import dataRouter from "./routes/dataRoute";
 import cors from "cors";
 import { getAllJobs } from "./robot/robot";
-import prisma from "./prisma";
 
 const app = express();
 const port = 3000;

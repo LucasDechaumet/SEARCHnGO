@@ -82,7 +82,7 @@ router.post("/addCompagny", async (req, res) => {
         met: false,
       };
       await addCompagny(compagny);
-      res.status(200);
+      res.send("bien ajoutée");
     } catch (error) {
       console.error(error);
     }

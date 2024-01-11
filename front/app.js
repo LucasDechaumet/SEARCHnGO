@@ -3,6 +3,16 @@ import { getAPI } from "./config.js";
 const API_KEY = getAPI();
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
 
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);
+  document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);
+  document.getElementById("banWordButton").addEventListener("click", banWord);
+  document.getElementById("addMyCompagnyButton").addEventListener("click", addMyCompagny);
+  document.getElementById("saveParametersButton").addEventListener("click", (event) => {
+    saveParameters(event);
+  });
+});
+
 let map;
 
 function initMapAsync() {
@@ -87,6 +97,7 @@ async function checkPassword() {
       const text = document.getElementById("passwordText");
       text.innerText = "Veuillez entrer un mot de passe";
       text.style.color = "red";
+      return { success: false };
     } else {
       const response = await fetch("http://localhost:3000/setting/password", {
         method: "POST",
@@ -265,6 +276,7 @@ async function changeAdress(element) {
       console.error("Change Adress Fetch Error:", error);
     }
   } else if (password.success === false) {
+    scrollTop();
     wrongpassword();
   }
 }
@@ -289,8 +301,16 @@ async function metCompagny(element) {
       console.error("Met Compagny Fetch Error:", error);
     }
   } else if (password.success === false) {
+    scrollTop();
     wrongpassword();
   }
+}
+
+function scrollTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 
 async function banWord() {
@@ -299,18 +319,19 @@ async function banWord() {
     try {
       const input = document.getElementById("banThing");
       const word = input.value;
-      body = [word];
+      const body = [word];
       const response = await fetch("http://localhost:3000/setting/banWords", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       }).then((response) => {
-        input.value = "";
+        location.reload();
       });
     } catch (error) {
       console.error(error);
     }
   } else if (password.success === false) {
+    scrollTop();
     wrongpassword();
   }
 }
@@ -329,6 +350,7 @@ async function banCompagnie(element) {
       })
       .catch((error) => console.error(error));
   } else if (password.success === false) {
+    scrollTop();
     wrongpassword();
   }
 }
@@ -347,6 +369,7 @@ async function banTitle(element) {
       })
       .catch((error) => console.log(error));
   } else if (password.success === false) {
+    scrollTop();
     wrongpassword();
   }
 }
@@ -396,6 +419,7 @@ async function getLocationFromParam(location) {
 }
 
 async function addMyCompagny() {
+  console.log("addMyCompagny");
   const password = await checkPassword();
   if (password.success === true) {
     try {
@@ -414,6 +438,7 @@ async function addMyCompagny() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((response) => {
+        console.log("je reload");
         location.reload();
       });
     } catch (error) {
