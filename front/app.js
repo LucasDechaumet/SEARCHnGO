@@ -99,7 +99,7 @@ async function checkPassword() {
       text.style.color = "red";
       return { success: false };
     } else {
-      const response = await fetch("http://localhost:3000/setting/password", {
+      const response = await fetch("https://searchngo.onrender.com/setting/password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -125,7 +125,7 @@ async function saveParameters(event) {
     for (const [key, value] of formData.entries()) {
       data[key] = value;
     }
-    const response = await fetch("http://localhost:3000/setting/chips", {
+    const response = await fetch("https://searchngo.onrender.com/setting/chips", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -187,7 +187,9 @@ function exportToPDF() {
 async function loadTable(data) {
   try {
     const param = data.param;
-    const response = await fetch(`http://localhost:3000/data/allCompagnies/${param}`);
+    const response = await fetch(
+      `https://searchngo.onrender.com/data/allCompagnies/${param}`
+    );
     const json = await response.json();
     json.forEach((element) => {
       var newTR = document.createElement("tr");
@@ -259,7 +261,7 @@ async function changeAdress(element) {
     try {
       const adress = document.getElementById(`${element.id}`).value;
       await fetch(
-        `http://localhost:3000/data/changeAdress/${encodeURIComponent(
+        `https://searchngo.onrender.com/data/changeAdress/${encodeURIComponent(
           element.compagny_name
         )}`,
         {
@@ -286,7 +288,7 @@ async function metCompagny(element) {
   if (password.success === true) {
     try {
       const response = await fetch(
-        `http://localhost:3000/data/metCompagny/${encodeURIComponent(
+        `https://searchngo.onrender.com/data/metCompagny/${encodeURIComponent(
           element.compagny_name
         )}`,
         {
@@ -320,7 +322,7 @@ async function banWord() {
       const input = document.getElementById("banThing");
       const word = input.value;
       const body = [word];
-      const response = await fetch("http://localhost:3000/setting/banWords", {
+      const response = await fetch("https://searchngo.onrender.com/setting/banWords", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -339,7 +341,7 @@ async function banWord() {
 async function banCompagnie(element) {
   const password = await checkPassword();
   if (password.success === true) {
-    const response = await fetch("http://localhost:3000/setting/banCompagnie", {
+    const response = await fetch("https://searchngo.onrender.com/setting/banCompagnie", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(element),
@@ -358,7 +360,7 @@ async function banCompagnie(element) {
 async function banTitle(element) {
   const password = await checkPassword();
   if (password.success === true) {
-    const response = await fetch("http://localhost:3000/setting/banTitle", {
+    const response = await fetch("https://searchngo.onrender.com/setting/banTitle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(element),
@@ -375,7 +377,7 @@ async function banTitle(element) {
 }
 
 async function getParam() {
-  const response = await fetch("http://localhost:3000/setting/parameter");
+  const response = await fetch("https://searchngo.onrender.com/setting/parameter");
   const data = await response.json();
   const param = data[0].param;
   const location = data[0].location;
@@ -433,7 +435,7 @@ async function addMyCompagny() {
         q_parameter: param,
       };
 
-      const response = await fetch("http://localhost:3000/data/addCompagny", {
+      const response = await fetch("https://searchngo.onrender.com/data/addCompagny", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
