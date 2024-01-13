@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdress = exports.hasBanWord = exports.getBanWords = exports.alreadyInDb = exports.addCompagny = exports.getlrad = exports.getLocation = exports.getqParam = void 0;
+exports.setDateUpdate = exports.getLastUpdate = exports.getAdress = exports.hasBanWord = exports.getBanWords = exports.alreadyInDb = exports.addCompagny = exports.getlrad = exports.getLocation = exports.getqParam = void 0;
 const prisma_1 = __importDefault(require("../prisma"));
 function getqParam() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -133,3 +133,33 @@ function getAdress(name, city) {
     });
 }
 exports.getAdress = getAdress;
+function getLastUpdate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield prisma_1.default.lastTimeRobot.findFirst();
+            const lastUpdate = response === null || response === void 0 ? void 0 : response.date;
+            return lastUpdate;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
+exports.getLastUpdate = getLastUpdate;
+function setDateUpdate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const currentDate = new Date();
+            const response = yield prisma_1.default.lastTimeRobot.findFirst();
+            const id = response === null || response === void 0 ? void 0 : response.id;
+            const update = yield prisma_1.default.lastTimeRobot.update({
+                where: { id: id },
+                data: { date: currentDate },
+            });
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
+exports.setDateUpdate = setDateUpdate;

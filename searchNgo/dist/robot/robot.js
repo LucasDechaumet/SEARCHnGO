@@ -9,12 +9,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllJobs = void 0;
+exports.getAllJobs = exports.testSet = exports.testDiff = void 0;
 const utils_1 = require("./utils");
 const URL = "https://serpapi.com/search.json?";
 const ENGINE = "google_jobs";
 const HL = "fr";
 const API_KEY = process.env.API_KEY_GOOGLE;
+function testDiff() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const currentDate = new Date();
+        const lastUpdate = yield (0, utils_1.getLastUpdate)();
+        let diffTime = 0;
+        if (lastUpdate != undefined) {
+            diffTime = lastUpdate.getTime() - currentDate.getTime();
+        }
+        if (diffTime > -60000) {
+            console.log("Je lance pas le robot");
+        }
+        else {
+            console.log("Je lance le robot");
+        }
+    });
+}
+exports.testDiff = testDiff;
+function testSet() {
+    (0, utils_1.setDateUpdate)();
+}
+exports.testSet = testSet;
 function getAllJobs() {
     return __awaiter(this, void 0, void 0, function* () {
         const promises = [];

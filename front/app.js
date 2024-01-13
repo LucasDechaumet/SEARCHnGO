@@ -1,7 +1,9 @@
-import { getAPI } from "./config.js";
-
-const API_KEY = getAPI();
+const API_KEY = "4f22a20ddece394734d64cf33ec60492ee644a9b1fab9962c2d43b88842b91a4";
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
+
+alert(
+  "C'est un serveur gratuit, il est possible que les données prennent du temps à charger, 1 minute environ (appuyer sur OK pour charger)"
+);
 
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);

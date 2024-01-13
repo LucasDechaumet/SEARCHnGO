@@ -37,3 +37,8 @@ model password {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   password String
 }
+
+model lastTimeRobot {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime
+}
