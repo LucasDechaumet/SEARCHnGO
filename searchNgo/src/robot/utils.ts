@@ -108,7 +108,7 @@ export async function getAdress(name: string, city: string) {
 export async function getLastUpdate() {
   try {
     const response = await prisma.lastTimeRobot.findFirst();
-    const lastUpdate = response?.date;
+    const lastUpdate = response?.apiCall;
     return lastUpdate;
   } catch (error) {
     console.error(error);
@@ -122,7 +122,20 @@ export async function setDateUpdate() {
     const id = response?.id;
     const update = await prisma.lastTimeRobot.update({
       where: { id: id },
-      data: { date: currentDate },
+      data: { apiCall: currentDate },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function setTryDate(date: Date) {
+  try {
+    const response = await prisma.lastTimeRobot.findFirst();
+    const id = response?.id;
+    const update = await prisma.lastTimeRobot.update({
+      where: { id: id },
+      data: { try: date },
     });
   } catch (error) {
     console.error(error);

@@ -8,6 +8,7 @@ import {
   getAdress,
   getLastUpdate,
   setDateUpdate,
+  setTryDate,
 } from "./utils";
 
 const URL = "https://serpapi.com/search.json?";
@@ -69,5 +70,8 @@ export async function getAllJobs() {
       }
     }
     await Promise.all(promises);
+  } else {
+    setTryDate(currentDate);
+    console.log("Je ne lance pas le robot");
   }
 }
