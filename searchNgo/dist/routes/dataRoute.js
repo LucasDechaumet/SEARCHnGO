@@ -55,6 +55,43 @@ router.get("/allCompagnies/:keyword", (req, res) => __awaiter(void 0, void 0, vo
             .json({ error: "Une erreur est survenue lors du traitement de la demande." });
     }
 }));
+router.put("/importantCompagny/:name", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const compagny_name = req.params.name;
+        const response = yield prisma_1.default.compagnies.update({
+            where: {
+                compagny_name: compagny_name,
+            },
+            data: {
+                important: true,
+            },
+        });
+        console.log(response);
+        res.json(response);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
+router.put("/removeImportantCompagny/:name", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const compagny_name = req.params.name;
+        const response = yield prisma_1.default.compagnies.update({
+            where: {
+                compagny_name: compagny_name,
+            },
+            data: {
+                important: false,
+            },
+        });
+        res.json(response);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}));
 router.put("/metCompagny/:name", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const compagny_name = req.params.name;
@@ -89,6 +126,7 @@ router.post("/addCompagny", (req, res) => __awaiter(void 0, void 0, void 0, func
                 address: address,
                 coords: coords,
                 met: false,
+                important: false,
             };
             yield (0, utils_1.addCompagny)(compagny);
             res.send("bien ajoutée");

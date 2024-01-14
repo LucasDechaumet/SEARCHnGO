@@ -45,6 +45,43 @@ router.get("/allCompagnies/:keyword", async (req, res) => {
   }
 });
 
+router.put("/importantCompagny/:name", async (req, res) => {
+  try {
+    const compagny_name = req.params.name;
+    const response = await prisma.compagnies.update({
+      where: {
+        compagny_name: compagny_name,
+      },
+      data: {
+        important: true,
+      },
+    });
+    console.log(response);
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.put("/removeImportantCompagny/:name", async (req, res) => {
+  try {
+    const compagny_name = req.params.name;
+    const response = await prisma.compagnies.update({
+      where: {
+        compagny_name: compagny_name,
+      },
+      data: {
+        important: false,
+      },
+    });
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.put("/metCompagny/:name", async (req, res) => {
   try {
     const compagny_name = req.params.name;
@@ -80,6 +117,7 @@ router.post("/addCompagny", async (req, res) => {
         address: address,
         coords: coords,
         met: false,
+        important: false,
       };
       await addCompagny(compagny);
       res.send("bien ajoutée");

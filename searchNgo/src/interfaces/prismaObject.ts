@@ -6,4 +6,5 @@ interface Compagny {
   address: string;
   coords: { lat: number; lng: number };
   met: boolean;
+  important: boolean;
 }

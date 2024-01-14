@@ -61,6 +61,7 @@ export async function getAllJobs() {
               address: address,
               coords: coords,
               met: false,
+              important: false,
             };
             promises.push(addCompagny(newCompagny));
           }

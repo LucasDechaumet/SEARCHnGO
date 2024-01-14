@@ -9,7 +9,6 @@ alert(
 
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);
-  document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);
   document.getElementById("banWordButton").addEventListener("click", banWord);
   document.getElementById("addMyCompagnyButton").addEventListener("click", addMyCompagny);
   document.getElementById("saveParametersButton").addEventListener("click", (event) => {
@@ -198,8 +197,13 @@ async function loadTable(data) {
     json.forEach((element) => {
       var newTR = document.createElement("tr");
       var entrepriseTD = document.createElement("td");
-
       var entrepriseLink = document.createElement("a");
+      var important = document.createElement("span");
+      if (element.important == false || element.important == undefined) {
+      } else {
+        important.innerText = "⭐";
+        entrepriseTD.appendChild(important);
+      }
       entrepriseLink.innerText = element.compagny_name;
       entrepriseLink.onclick = () => initMapWElement(element);
       entrepriseLink.style.textDecoration = "underline";
@@ -244,6 +248,17 @@ async function loadTable(data) {
         entrepriseLink.style.fontWeight = "bold";
       }
 
+      var button5 = document.createElement("button");
+      if (element.important == false || element.important == undefined) {
+        button5.innerText = "Marquer comme important";
+        button5.addEventListener("click", () => importantCompagny(element));
+      } else {
+        button5.innerText = "Supprimer comme important";
+        button5.addEventListener("click", () => removeImportantCompagny(element));
+      }
+
+      optionTD.appendChild(button5);
+
       newTR.appendChild(entrepriseTD);
       newTR.appendChild(adressTD);
       newTR.appendChild(titleTD);
@@ -256,6 +271,53 @@ async function loadTable(data) {
     });
   } catch (error) {
     console.error(error);
+  }
+}
+
+async function importantCompagny(element) {
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const response = await fetch(
+        `https://searchngo.onrender.com/data/importantCompagny/${encodeURIComponent(
+          element.compagny_name
+        )}`,
+        {
+          method: "PUT",
+        }
+      ).then((response) => {
+        console.log(response);
+        location.reload();
+      });
+    } catch (error) {
+      console.error("Important Compagny Fetch Error:", error);
+    }
+  } else if (password.success === false) {
+    scrollTop();
+    wrongpassword();
+  }
+}
+
+async function removeImportantCompagny(element) {
+  const password = await checkPassword();
+  if (password.success === true) {
+    try {
+      const response = await fetch(
+        `https://searchngo.onrender.com/data/removeImportantCompagny/${encodeURIComponent(
+          element.compagny_name
+        )}`,
+        {
+          method: "PUT",
+        }
+      ).then((response) => {
+        location.reload();
+      });
+    } catch (error) {
+      console.error("Remove Important Compagny Fetch Error:", error);
+    }
+  } else if (password.success === false) {
+    scrollTop();
+    wrongpassword();
   }
 }
 

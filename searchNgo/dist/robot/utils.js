@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDateUpdate = exports.getLastUpdate = exports.getAdress = exports.hasBanWord = exports.getBanWords = exports.alreadyInDb = exports.addCompagny = exports.getlrad = exports.getLocation = exports.getqParam = void 0;
+exports.setTryDate = exports.setDateUpdate = exports.getLastUpdate = exports.getAdress = exports.hasBanWord = exports.getBanWords = exports.alreadyInDb = exports.addCompagny = exports.getlrad = exports.getLocation = exports.getqParam = void 0;
 const prisma_1 = __importDefault(require("../prisma"));
 function getqParam() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -137,7 +137,7 @@ function getLastUpdate() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield prisma_1.default.lastTimeRobot.findFirst();
-            const lastUpdate = response === null || response === void 0 ? void 0 : response.date;
+            const lastUpdate = response === null || response === void 0 ? void 0 : response.apiCall;
             return lastUpdate;
         }
         catch (error) {
@@ -154,7 +154,7 @@ function setDateUpdate() {
             const id = response === null || response === void 0 ? void 0 : response.id;
             const update = yield prisma_1.default.lastTimeRobot.update({
                 where: { id: id },
-                data: { date: currentDate },
+                data: { apiCall: currentDate },
             });
         }
         catch (error) {
@@ -163,3 +163,19 @@ function setDateUpdate() {
     });
 }
 exports.setDateUpdate = setDateUpdate;
+function setTryDate(date) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield prisma_1.default.lastTimeRobot.findFirst();
+            const id = response === null || response === void 0 ? void 0 : response.id;
+            const update = yield prisma_1.default.lastTimeRobot.update({
+                where: { id: id },
+                data: { try: date },
+            });
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
+exports.setTryDate = setTryDate;
