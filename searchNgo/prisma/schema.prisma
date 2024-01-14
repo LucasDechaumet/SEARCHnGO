@@ -19,7 +19,7 @@ model compagnies {
   address       String
   coords        Json
   met           Boolean
-  important     Boolean
+  important     Boolean?
 }
 
 model qParameter {
