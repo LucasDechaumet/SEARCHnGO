@@ -4,7 +4,7 @@ const API_KEY = getAPI();
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
 
 alert(
-  "C'est un serveur gratuit, il est possible que les données prennent du temps à charger, 1 minute environ (appuyer sur OK pour charger) et ne prêter pas attention au front ce n'était pas mon but ici :)"
+  "C'est un serveur gratuit, il est possible que les données prennent du temps à charger, 1 minute environ puis refresh la page (appuyer sur OK pour charger) et ne prêter pas attention au front ce n'était pas mon but ici :)"
 );
 
 document.addEventListener("DOMContentLoaded", function () {
