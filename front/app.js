@@ -286,7 +286,6 @@ async function importantCompagny(element) {
           method: "PUT",
         }
       ).then((response) => {
-        console.log(response);
         location.reload();
       });
     } catch (error) {
@@ -435,7 +434,7 @@ async function banTitle(element) {
         response.json();
         location.reload();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   } else if (password.success === false) {
     scrollTop();
     wrongpassword();
@@ -487,7 +486,6 @@ async function getLocationFromParam(location) {
 }
 
 async function addMyCompagny() {
-  console.log("addMyCompagny");
   const password = await checkPassword();
   if (password.success === true) {
     try {
@@ -506,7 +504,6 @@ async function addMyCompagny() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((response) => {
-        console.log("je reload");
         location.reload();
       });
     } catch (error) {

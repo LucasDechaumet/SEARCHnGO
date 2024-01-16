@@ -107,8 +107,19 @@ router.post("/addCompagny", async (req, res) => {
   if (!boolean) {
     try {
       const response = await getAdress(body.compagny_name, body.location);
-      const address = response.formatted_address;
-      const coords = response.geometry.location;
+      console.log(response);
+      console.log(JSON.stringify(response));
+      let address;
+      let coords;
+      if (response.formatted_address === undefined) {
+        throw new Error("Adresse non trouvée");
+        let address = "Adresse non trouvée";
+        const response = await getAdress(body.location, "France");
+        let coords = response.geometry.location;
+      } else {
+        let address = response.formatted_address;
+        let coords = response.geometry.location;
+      }
       const compagny: Compagny = {
         compagny_name: body.compagny_name,
         q_parameter: body.q_parameter,

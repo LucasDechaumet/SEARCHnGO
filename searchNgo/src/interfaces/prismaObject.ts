@@ -3,8 +3,8 @@ interface Compagny {
   compagny_name: string;
   title: string;
   location: string;
-  address: string;
-  coords: { lat: number; lng: number };
+  address: string | undefined;
+  coords: { lat: number; lng: number } | undefined;
   met: boolean;
   important: boolean;
 }
