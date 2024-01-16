@@ -56,7 +56,6 @@ router.put("/importantCompagny/:name", async (req, res) => {
         important: true,
       },
     });
-    console.log(response);
     res.json(response);
   } catch (error) {
     console.error(error);
@@ -103,22 +102,20 @@ router.put("/metCompagny/:name", async (req, res) => {
 router.post("/addCompagny", async (req, res) => {
   const body = req.body;
   const boolean = await alreadyInDb(body.compagny_name);
+  let address;
+  let coords;
 
   if (!boolean) {
     try {
       const response = await getAdress(body.compagny_name, body.location);
-      console.log(response);
-      console.log(JSON.stringify(response));
-      let address;
-      let coords;
       if (response.formatted_address === undefined) {
-        throw new Error("Adresse non trouvée");
-        let address = "Adresse non trouvée";
+        address = "Adresse non trouvée";
         const response = await getAdress(body.location, "France");
-        let coords = response.geometry.location;
+        coords = response.geometry.location;
+        throw new Error("Adresse non trouvée");
       } else {
-        let address = response.formatted_address;
-        let coords = response.geometry.location;
+        address = response.formatted_address;
+        coords = response.geometry.location;
       }
       const compagny: Compagny = {
         compagny_name: body.compagny_name,

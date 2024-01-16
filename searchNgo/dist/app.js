@@ -14,8 +14,8 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/setting", settingRoute_1.default);
 app.use("/data", dataRoute_1.default);
-(0, robot_1.getAllJobs)();
 console.log("Je lance l'application 2");
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    (0, robot_1.getAllJobs)();
 });

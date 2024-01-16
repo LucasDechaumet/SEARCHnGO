@@ -16,8 +16,8 @@ model compagnies {
   q_parameter   String
   title         String
   location      String
-  address       String
-  coords        Json
+  address       String?
+  coords        Json?
   met           Boolean
   important     Boolean?
 }

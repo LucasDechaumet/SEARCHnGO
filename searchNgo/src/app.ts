@@ -16,5 +16,7 @@ console.log("Je lance l'application 2");
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  getAllJobs();
+  setTimeout(() => {
+    getAllJobs();
+  }, 5000);
 });
