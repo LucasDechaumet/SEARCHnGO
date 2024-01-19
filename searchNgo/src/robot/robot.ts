@@ -14,16 +14,15 @@ import {
 const URL = "https://serpapi.com/search.json?";
 const ENGINE = "google_jobs";
 const HL = "fr";
-const API_KEY = process.env.API_KEY_GOOGLE;
+const API_KEY = process.env.API_KEY_SERPAPI;
 
 export async function getAllJobs() {
   const currentDate = new Date();
   const lastUpdate = await getLastUpdate();
-  let diffTime = 0;
-  diffTime = (lastUpdate?.getTime() ?? 0) - currentDate.getTime();
-  if (diffTime < -1.728e8) {
+  const diffTime = Number(currentDate) - Number(lastUpdate);
+  if (diffTime > Number(process.env.TIME_BETWEEN_CALL)) {
     console.log("Je lance le robot");
-    setDateUpdate();
+    await setDateUpdate();
 
     const promises: Promise<void>[] = [];
     for (let index = 0; index <= 100; index += 10) {
@@ -66,13 +65,14 @@ export async function getAllJobs() {
             promises.push(addCompagny(newCompagny));
           }
         });
+        await new Promise((resolve) => setTimeout(resolve, Number(process.env.TIMEOUT)));
       } catch (error) {
         console.error("Error:", error);
       }
     }
     await Promise.all(promises);
   } else {
-    setTryDate(currentDate);
+    await setTryDate(currentDate);
     console.log("Je ne lance pas le robot");
   }
 }
