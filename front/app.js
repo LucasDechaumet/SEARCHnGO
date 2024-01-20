@@ -98,7 +98,15 @@ function initMapAsync() {
 
         map = new google.maps.Map(document.getElementById("map"), options);
         resolve();
-        removeLoadingPage();
+        console.log("Map loaded");
+        setTimeout(() => {
+          var scriptsToRemove = document.querySelectorAll("script");
+          console.log("go");
+          scriptsToRemove.forEach((script) => {
+            script.remove();
+          });
+          removeLoadingPage();
+        }, 1000);
       } catch (error) {
         reject(error);
       }
@@ -108,7 +116,7 @@ function initMapAsync() {
 
 const script = document.createElement("script");
 script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`;
-
+script.id = "mapCall";
 document.head.appendChild(script);
 
 initMapAsync();
