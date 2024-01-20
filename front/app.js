@@ -3,11 +3,12 @@ import { getAPI } from "./config.js";
 const API_KEY = getAPI();
 const URL_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/json?";
 
-alert(
-  "C'est un serveur gratuit, il est possible que les données prennent du temps à charger, 1 minute environ puis refresh la page (appuyer sur OK pour charger) et ne prêter pas attention au front ce n'était pas mon but ici :)"
-);
+// alert(
+//   "C'est un serveur gratuit, il est possible que les données prennent du temps à charger, 1 minute environ puis refresh la page (appuyer sur OK pour charger) et ne prêter pas attention au front ce n'était pas mon but ici :)"
+// );
 
 document.addEventListener("DOMContentLoaded", function () {
+  loadingPage();
   document.getElementById("exportPDFButton").addEventListener("click", exportToPDF);
   document.getElementById("banWordButton").addEventListener("click", banWord);
   document.getElementById("addMyCompagnyButton").addEventListener("click", addMyCompagny);
@@ -15,6 +16,72 @@ document.addEventListener("DOMContentLoaded", function () {
     saveParameters(event);
   });
 });
+
+function loadingPage() {
+  const whiteScreen = document.createElement("div");
+  whiteScreen.className = "whiteScreen";
+  whiteScreen.style.width = "100%";
+  whiteScreen.style.height = "100vh";
+  whiteScreen.style.backgroundColor = "white";
+  whiteScreen.style.position = "absolute";
+  whiteScreen.style.top = "0";
+  whiteScreen.style.left = "0";
+  const body = document.body;
+  document.body.style.overflow = "hidden";
+  document.body.appendChild(whiteScreen);
+
+  setTimeout(() => {
+    const loadingTextDiv = document.createElement("div");
+    loadingTextDiv.style.width = "550px";
+    loadingTextDiv.style.position = "absolute";
+    loadingTextDiv.style.top = "39.5%";
+    loadingTextDiv.style.left = "40%";
+    loadingTextDiv.style.border = "1px solid red";
+    loadingTextDiv.style.borderRadius = "10px";
+
+    const loadingText = document.createElement("p");
+
+    loadingTextDiv.style.textAlign = "center";
+    loadingTextDiv.style.textAlign = "center";
+    loadingText.style.lineHeight = "1.7";
+    loadingText.style.fontSize = "19px";
+    loadingText.style.color = "red";
+
+    loadingTextDiv.appendChild(loadingText);
+
+    loadingText.textContent = `C'est un serveur gratuit qui se met en veille, veuillez attendre pour qu'il se rallume et que les données s'affichent (environ 1 minute). Ne prêtez pas attention au front, ce n'était pas mon but ici.`;
+    whiteScreen.appendChild(loadingTextDiv);
+
+    const loadingSpinner = document.createElement("div");
+    loadingSpinner.className = "loadingio-spinner-gear-byfsg9u2gqd";
+
+    const loadingSpinnerContent = document.createElement("div");
+    loadingSpinnerContent.className = "ldio-d0lp8lee6hp";
+
+    const spinner = document.createElement("div");
+    spinner.appendChild(document.createElement("div"));
+    spinner.appendChild(document.createElement("div"));
+    spinner.appendChild(document.createElement("div"));
+    spinner.appendChild(document.createElement("div"));
+    spinner.appendChild(document.createElement("div"));
+    spinner.appendChild(document.createElement("div"));
+
+    loadingSpinnerContent.appendChild(spinner);
+    loadingSpinner.appendChild(loadingSpinnerContent);
+    loadingSpinner.style.position = "absolute";
+    loadingSpinner.style.top = "35%";
+    loadingSpinner.style.left = "20%";
+    whiteScreen.appendChild(loadingSpinner);
+  }, 300);
+}
+
+function removeLoadingPage() {
+  const whiteScreen = document.querySelector(".whiteScreen");
+  if (whiteScreen) {
+    whiteScreen.remove();
+  }
+  document.body.style.overflow = "auto";
+}
 
 let map;
 
@@ -31,6 +98,7 @@ function initMapAsync() {
 
         map = new google.maps.Map(document.getElementById("map"), options);
         resolve();
+        removeLoadingPage();
       } catch (error) {
         reject(error);
       }
@@ -39,7 +107,6 @@ function initMapAsync() {
 }
 
 const script = document.createElement("script");
-script.defer = true;
 script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`;
 
 document.head.appendChild(script);
@@ -250,10 +317,10 @@ async function loadTable(data) {
 
       var button5 = document.createElement("button");
       if (element.important == false || element.important == undefined) {
-        button5.innerText = "Marquer comme important";
+        button5.innerText = "Marquer comme favoris";
         button5.addEventListener("click", () => importantCompagny(element));
       } else {
-        button5.innerText = "Supprimer comme important";
+        button5.innerText = "Supprimer comme favoris";
         button5.addEventListener("click", () => removeImportantCompagny(element));
       }
 
