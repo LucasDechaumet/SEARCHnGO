@@ -269,7 +269,8 @@ async function loadTable(data) {
       `https://searchngo.onrender.com/data/allCompagnies/${param}`
     );
     const json = await response.json();
-    json.forEach((element) => {
+    const finalData = json.reverse();
+    finalData.forEach((element) => {
       var newTR = document.createElement("tr");
       var entrepriseTD = document.createElement("td");
       var entrepriseLink = document.createElement("a");
