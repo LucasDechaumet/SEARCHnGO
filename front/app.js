@@ -17,7 +17,19 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+function saveScrollPosition() {
+  const scrollPosition = window.scrollY;
+  localStorage.setItem("scrollPosition", scrollPosition);
+}
+
 function loadingPage() {
+  var positionScroll = localStorage.getItem("positionScroll");
+
+  if (positionScroll !== null) {
+    window.scrollTo(0, positionScroll);
+    localStorage.removeItem("positionScroll");
+  }
+
   const whiteScreen = document.createElement("div");
   whiteScreen.className = "whiteScreen";
   whiteScreen.style.width = "100%";
