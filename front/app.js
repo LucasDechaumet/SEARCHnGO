@@ -23,13 +23,6 @@ function saveScrollPosition() {
 }
 
 function loadingPage() {
-  var positionScroll = localStorage.getItem("positionScroll");
-
-  if (positionScroll !== null) {
-    window.scrollTo(0, positionScroll);
-    localStorage.removeItem("positionScroll");
-  }
-
   const whiteScreen = document.createElement("div");
   whiteScreen.className = "whiteScreen";
   whiteScreen.style.width = "100%";
@@ -84,7 +77,7 @@ function loadingPage() {
     loadingSpinner.style.top = "35%";
     loadingSpinner.style.left = "20%";
     whiteScreen.appendChild(loadingSpinner);
-  }, 300);
+  }, 400);
 }
 
 function removeLoadingPage() {
@@ -93,6 +86,12 @@ function removeLoadingPage() {
     whiteScreen.remove();
   }
   document.body.style.overflow = "auto";
+  var positionScroll = localStorage.getItem("scrollPosition");
+  console.log("position : " + positionScroll);
+  if (positionScroll !== null) {
+    window.scrollTo(0, positionScroll);
+    localStorage.removeItem("positionScroll");
+  }
 }
 
 let map;
