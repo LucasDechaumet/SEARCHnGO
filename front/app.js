@@ -494,6 +494,7 @@ async function banWord() {
 async function banCompagnie(element) {
   const password = await checkPassword();
   if (password.success === true) {
+    saveScrollPosition();
     const response = await fetch("https://searchngo.onrender.com/setting/banCompagnie", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
